@@ -1,10 +1,19 @@
 import express from 'express';
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
-import firebaseConfig from '../bd/db.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const router = express.Router();
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
+});
 const db = getFirestore(app);
 
 // Crear una nueva receta
@@ -31,7 +40,7 @@ router.post('/agregar', async (req, res) => {
       preparationTime, 
       ingredients, 
       userId, 
-      steps  // Agregar steps a la base de datos
+      steps  
     });
 
     res.status(200).json({ id: docRef.id });
@@ -97,5 +106,23 @@ router.delete('/eliminar/:id', async (req, res) => {
     res.status(500).json({ error: "Error al eliminar receta" });
   }
 });
+
+
+
+// En tu archivo de rutas donde tienes definido el otro endpoint
+router.get('/all', async (req, res) => {
+  try {
+    console.log('Fetching all recipes'); // Registro para depuración
+    const recipesRef = collection(db, 'recipes');
+    const querySnapshot = await getDocs(recipesRef);
+    const recipes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.status(200).json(recipes);
+  } catch (error) {
+    console.error("Error fetching all recipes:", error);
+    res.status(500).json({ error: "Error fetching all recipes" });
+  }
+});
+
+
 
 export default router;

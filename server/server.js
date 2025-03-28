@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRoutes from '../Controllers/userRoutes.js';
- import recipeRoutes from '../Controllers/recipeRoutes.js';
+import recipeRoutes from '../Controllers/recipeRoutes.js';
 import contactRoutes from '../Controllers/contactRoutes.js';
 import passwordRoutes from '../Controllers/passwordRoutes.js';
-  import favoritesRoutes from '../Controllers/favoritesRoutes.js';
+import favoritesRoutes from '../Controllers/favoritesRoutes.js';
 
 // Cargar variables de entorno
 dotenv.config();
